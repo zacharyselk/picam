@@ -37,8 +37,8 @@ class TSOutput(object):
             self.msg_flag = True
         '''
         # Frames that are too small?
-        if sys.getsizeof(buf) < 500:
-            print(buf)
+        #if sys.getsizeof(buf) < 500:
+        #    print(buf)
         self.video_output_stream.write(buf)
         global byte_count
         byte_count += int(sys.getsizeof(buf))
@@ -62,15 +62,20 @@ class TSOutput(object):
 
 
 with picamera.PiCamera() as camera:
-    #camera.resolution = (640, 480)
-    camera.resolution = (1280, 720)
-    #camera.resolution = (1920, 1080)
+    if sys.argv[3] == '480p':
+        camera.resolution = (640, 480)
+    elif sys.argv[3] == '720p':
+        camera.resolution = (1280, 720)
+    elif sys.argv[3] == '1080p':
+        camera.resolution = (1920, 1080)
+        
     camera.framerate = float(sys.argv[2])
-    filename = '../logs/' + sys.argv[3] + '.h264'
+    filename = '../logs/' + str(sys.argv[1]) + 'sec_' +\
+               str(sys.argv[2]) + 'fps_' + str(sys.argv[3]) + str(sys.argv[4])
     camera.start_recording(TSOutput(camera, '/media/pi/untitled/other/test.h264',
                                     filename+'.ts', filename+'.lt'),
                            format='h264')
 
     camera.wait_recording(float(sys.argv[1]))
     camera.stop_recording()
-    print(byte_count)
+    #print(byte_count)
