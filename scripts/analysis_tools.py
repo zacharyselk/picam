@@ -10,7 +10,7 @@ class fileEvaluation:
         self.file_path = ts_path_name
         self.lines = []
         self.framerate = 0
-        self.standard_deviation = ''
+        self.standard_deviation = u''
         
         with open(self.file_path, 'r') as f:
             self.lines = f.readlines()
@@ -28,7 +28,7 @@ class fileEvaluation:
 
         deviation_sum = 0
         prev_time = 0
-        
+
         for line in self.lines:
             deviation_sum += (float(line)-prev_time-mean)**2
             prev_time = float(line)
@@ -43,8 +43,7 @@ class fileEvaluation:
             units = 'sec'
             standard_deviation /= 1000.0
         
-        self.standard_devation = ('%f %s' % (standard_deviation, units))
-
+        self.standard_deviation = ('%f %s' % (standard_deviation, units))
 
         
     def find_framerate(self):
@@ -116,7 +115,10 @@ class fileEvaluation:
             y.append(fps)
             last_time = cur_time
         plt.plot(x, y, 'go')
+        plt.ylabel('Framerate')
+        plt.xlabel('Time [sec]')
         plt.show()
+        plt.close()
 
 
     # Plots how much the closes frame deviates from being on the target_fps
@@ -172,11 +174,28 @@ class fileEvaluation:
             correct_time += time_gap # Advance the timeframe
 
         # Plotting everything
-        plt.plot(hits_x[1:], hits_y[1:], 'go')
-        plt.plot(dropped_x[1:], dropped_y[1:], 'ro')
-        plt.plot(extra_x[1:], extra_y[1:], 'ro')
-        plt.ylabel('Time Deviation from Expected')
+        plt.plot(hits_x[1:], [i*1000000 for i in hits_y[1:]], 'go')
+        plt.plot(dropped_x[1:], [i*1000000 for i in dropped_y[1:]], 'ro')
+        plt.plot(extra_x[1:], [i*1000000 for i in extra_y[1:]], 'ro')
+        plt.ylabel('Time Deviation from Expected [\xB5s]')
         plt.xlabel('Frame')
         plt.show()
         plt.close()
 
+
+    def plot_relative_deviation(self):
+        self.plot_deviation(self.framerate)
+
+    def plot_timestamps(self):
+        list_of_times = []
+        x_axis = []
+
+        for i, timestamp in enumerate(self.lines):
+            list_of_times.append(float(timestamp))
+            x_axis.append(i)
+
+        plt.plot(x_axis, list_of_times, 'g')
+        plt.ylabel('ms')
+        plt.xlabel('Timestamp')
+        plt.show()
+        plt.close()
