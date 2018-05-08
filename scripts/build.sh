@@ -1,1 +1,1 @@
-g++ --std=c++11 $1.cc -lavutil -lavcodec -o $1
+g++ --std=c++11 $1.cc -lavutil -lavformat -lavcodec -o $1

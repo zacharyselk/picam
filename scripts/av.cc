@@ -1,7 +1,7 @@
 extern "C"
 {
 #include<libavcodec/avcodec.h>
-#include<libavformat/avio.h>
+#include<libavformat/avformat.h>
 #include<libavutil/mathematics.h>
 }
 #include<iostream>
@@ -9,8 +9,10 @@ extern "C"
 int main()
 {
   //std::cout << avcodec_find_decoder(AV_CODEC_ID_H264) << '\n';
-  AVCodecParserContext *context = av_parser_init(AV_CODEC_ID_H264);
-  av_open_input_file(&context, "test.h264", 0, 0, 0);
+  AVCodecParserContext *codecContext = av_parser_init(AV_CODEC_ID_H264);
+  AVFormatContext *formatContext = avformat_alloc_context();
+
+  avformat_open_input(&formatContext, '../video/', NULL, NULL);
   
   
   return 0;
