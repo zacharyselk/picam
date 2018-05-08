@@ -199,9 +199,11 @@ class fileEvaluation:
     def plot_timestamps(self):
         list_of_times = []
         x_axis = []
-
+        last_time = 0
+        
         for i, timestamp in enumerate(self.lines):
-            list_of_times.append(float(timestamp) / 1000.0)
+            list_of_times.append(float(timestamp) / 1000.0 - last_time)
+            last_time = float(timestamp/1000.0)
             x_axis.append(i)
 
         plt.plot(x_axis, list_of_times, 'g')
