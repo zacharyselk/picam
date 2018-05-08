@@ -173,11 +173,21 @@ class fileEvaluation:
             count += 1               # Another frame is found
             correct_time += time_gap # Advance the timeframe
 
+
+        multiplier = 1000000
+        units = '\xB5s'
+        if time_gap > 1:
+            multiplier = 1
+            units = 'sec'
+        elif time_gap * 1000 > 1:
+            multiplier = 1000
+            units = 'ms'
+            
         # Plotting everything
-        plt.plot(hits_x[1:], [i*1000000 for i in hits_y[1:]], 'go')
-        plt.plot(dropped_x[1:], [i*1000000 for i in dropped_y[1:]], 'ro')
-        plt.plot(extra_x[1:], [i*1000000 for i in extra_y[1:]], 'ro')
-        plt.ylabel('Time Deviation from Expected [\xB5s]')
+        plt.plot(hits_x[1:], [i*multiplier for i in hits_y[1:]], 'go')
+        plt.plot(dropped_x[1:], [i*multiplier for i in dropped_y[1:]], 'ro')
+        plt.plot(extra_x[1:], [i*multiplier for i in extra_y[1:]], 'ro')
+        plt.ylabel('Time Deviation from Expected [%s]' % units)
         plt.xlabel('Frame')
         plt.show()
         plt.close()
@@ -191,11 +201,11 @@ class fileEvaluation:
         x_axis = []
 
         for i, timestamp in enumerate(self.lines):
-            list_of_times.append(float(timestamp))
+            list_of_times.append(float(timestamp) / 1000.0)
             x_axis.append(i)
 
         plt.plot(x_axis, list_of_times, 'g')
-        plt.ylabel('ms')
+        plt.ylabel('sec')
         plt.xlabel('Timestamp')
         plt.show()
         plt.close()
