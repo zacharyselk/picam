@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 class fileEvaluation:
     def __init__(self, ts_path_name, target_fps=None):
         self.target_fps = target_fps
-        self.file_path = path_name
+        self.file_path = ts_path_name
         self.lines = []
         self.framerate = 0
         
-        with open(path_name, 'r') as f:
+        with open(self.file_path, 'r') as f:
             self.lines = f.readlines()
         self.find_framerate()
 
@@ -25,21 +25,21 @@ class fileEvaluation:
             total_time += time - prev_time
             prev_time = time
             
-
+        self.length = total_time
         ave = total_time / (len(self.lines)-1)
         self.framerate = 1.0/ave
         
 
     def info(self):
-        print('Sec: %s' % str(total_time))
+        print('Sec: %s' % str(self.length))
         print('Frames: %s' % str(len(self.lines)-1))
-        print('FPS: %s' % str(self.framerate))
+        print('Framerate: %s' % str(self.framerate))
 
         
     # Finds frames if a frame has deviated more than half the
     #     inverse of the framerate from the standard then determins
     #     whether a timeframe is missing a frame or has too many frames
-    def find_dropped_frames(self):
+    def dropped_frames(self):
         frames = len(self.lines)-1
         list_of_frames = [[]*frames]
         INVERSE_FPS = 1.0/self.framerate
@@ -73,7 +73,7 @@ class fileEvaluation:
 
 
     # Plots the framerate of each frame in relation to the last frame
-    def plot_current_fps(self):
+    def plot_framerate(self):
         x = []
         y = []
         last_time = float(self.lines[0])
@@ -88,7 +88,7 @@ class fileEvaluation:
 
 
     # Plots how much the closes frame deviates from being on the target_fps
-    def plot_deviation(self):
+    def plot_deviation(self, target_framerate):
         hits_x = []     # A list of x values for each frame
         hits_y = []     # A list of y values for each frame
         dropped_x = []  # A list of x values for each dropped frame
@@ -98,7 +98,7 @@ class fileEvaluation:
         
         # The inverse of the framerate, to give a timeframe for where a frame
         #     should be found
-        time_gap = 1.0/float(self.target_framerate)
+        time_gap = 1.0/float(target_framerate)
         correct_time = 0  # Where the frame should be found
         line_num = 0      # What line from the file is being used
         count = 0         # Counting the number of frames
