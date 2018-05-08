@@ -15,10 +15,10 @@ byte_count = 0
 class TSOutput(object):
     def __init__(self, camera, v_filename, ts_filename, local_time_filename):
         self.camera = camera
-        #self.video_output_stream = io.open(v_filename, 'wb')
+        self.video_output_stream = io.open(v_filename, 'wb')
         #self.video_output_stream = io.open('/dev/null', 'wb')
-        self.video_output_stream = socket.InetStream(s=None)
-        self.video_output_stream.connect('142.66.96.154', 1122)
+        #self.video_output_stream = socket.InetStream(s=None)
+        #self.video_output_stream.connect('142.66.96.154', 1122)
         self.msg_flag = False
         
         self.ts_output_stream = io.open(ts_filename, 'w')
@@ -30,12 +30,12 @@ class TSOutput(object):
 
     def write(self, buf):
         # Send the expected frame size to the server
-        if not self.msg_flag:
+        '''if not self.msg_flag:
             print(sys.getsizeof(buf))
             self.video_output_stream.send_len(sys.getsizeof(buf))
             self.video_output_stream.set_msg_len(sys.getsizeof(buf))
             self.msg_flag = True
-
+        '''
         # Frames that are too small?
         if sys.getsizeof(buf) < 500:
             print(buf)
@@ -67,7 +67,8 @@ with picamera.PiCamera() as camera:
     #camera.resolution = (1920, 1080)
     camera.framerate = float(sys.argv[2])
     filename = '../logs/' + sys.argv[3] + '.h264'
-    camera.start_recording(TSOutput(camera, filename, filename+'.ts', filename+'.lt'),
+    camera.start_recording(TSOutput(camera, '/media/pi/untitled/other/test.h264',
+                                    filename+'.ts', filename+'.lt'),
                            format='h264')
 
     camera.wait_recording(float(sys.argv[1]))

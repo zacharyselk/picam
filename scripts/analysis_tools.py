@@ -201,7 +201,7 @@ class fileEvaluation:
         x_axis = []
         last_time = 0
         
-        for i, timestamp in enumerate(self.lines):
+        for i, timestamp in enumerate(self.lines[1:]):
             list_of_times.append(float(timestamp) / 1000.0 - last_time)
             last_time = float(timestamp) / 1000.0
             x_axis.append(i)
