@@ -70,8 +70,8 @@ with picamera.PiCamera() as camera:
         camera.resolution = (1920, 1080)
         
     camera.framerate = float(sys.argv[2])
-    filename = '../logs/' + str(sys.argv[1]) + 'sec_' +\
-               str(sys.argv[2]) + 'fps_' + str(sys.argv[3]) + str(sys.argv[4])
+    filename = '../logs/' + str(sys.argv[1]) + 'sec_' + str(sys.argv[2]) +\
+               'fps_' + str(sys.argv[3]) + '.' + str(sys.argv[4])
     camera.start_recording(TSOutput(camera, '/media/pi/untitled/other/test.h264',
                                     filename+'.ts', filename+'.lt'),
                            format='h264')
