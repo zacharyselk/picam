@@ -10,10 +10,41 @@ class fileEvaluation:
         self.file_path = ts_path_name
         self.lines = []
         self.framerate = 0
+        self.standard_deviation = ''
         
         with open(self.file_path, 'r') as f:
             self.lines = f.readlines()
         self.find_framerate()
+
+
+    def find_standard_deviation(self):
+        total = 0
+        prev_time = 0;
+        
+        for line in self.lines:
+            total += float(line) - prev_time
+            prev_time = float(line)
+        mean = total / len(self.lines)
+
+        deviation_sum = 0
+        prev_time = 0
+        
+        for line in self.lines:
+            deviation_sum += (float(line)-prev_time-mean)**2
+            prev_time = float(line)
+        standard_deviation = deviation_sum / len(self.lines)
+        
+    
+        units = 'ms'
+        if standard_deviation < 1:
+            units = '\xB5s'
+            standard_deviation *= 1000.0
+        elif standard_deviation >= 1000:
+            units = 'sec'
+            standard_deviation /= 1000.0
+        
+        self.standard_devation = ('%f %s' % (standard_deviation, units))
+
 
         
     def find_framerate(self):
@@ -28,12 +59,13 @@ class fileEvaluation:
         self.length = total_time
         ave = total_time / (len(self.lines)-1)
         self.framerate = 1.0/ave
-        
+        self.find_standard_deviation()        
 
     def info(self):
         print('Sec: %s' % str(self.length))
         print('Frames: %s' % str(len(self.lines)-1))
         print('Framerate: %s' % str(self.framerate))
+        print('Standard Deviation: %s' % self.standard_deviation)
 
         
     # Finds frames if a frame has deviated more than half the
