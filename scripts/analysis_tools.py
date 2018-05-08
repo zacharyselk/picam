@@ -203,7 +203,7 @@ class fileEvaluation:
         
         for i, timestamp in enumerate(self.lines):
             list_of_times.append(float(timestamp) / 1000.0 - last_time)
-            last_time = float(timestamp/1000.0)
+            last_time = float(timestamp) / 1000.0
             x_axis.append(i)
 
         plt.plot(x_axis, list_of_times, 'g')
