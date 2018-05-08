@@ -63,8 +63,8 @@ class TSOutput(object):
 
 with picamera.PiCamera() as camera:
     #camera.resolution = (640, 480)
-    #camera.resolution = (1080, 780)
-    camera.resolution = (1920, 1080)
+    camera.resolution = (1280, 720)
+    #camera.resolution = (1920, 1080)
     camera.framerate = float(sys.argv[2])
     filename = '../logs/' + sys.argv[3] + '.h264'
     camera.start_recording(TSOutput(camera, filename, filename+'.ts', filename+'.lt'),
