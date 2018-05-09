@@ -105,10 +105,10 @@ class fileAnalysis:
         
     # Displays simple information about the file
     def info(self):
-        print('Sec: %s' % str(self.length))
-        print('Frames: %s' % str(len(self.lines)-1))
-        print('Framerate: %s' % str(self.framerate))
-        print('Standard Deviation: %s' % self.standard_deviation)
+        print('  Sec: %s' % str(self.length))
+        print('  Frames: %s' % str(len(self.lines)-1))
+        print('  Framerate: %s' % str(self.framerate))
+        print('  Standard Deviation: %s' % self.standard_deviation)
 
         
     # Finds frames if a frame has deviated more than half the
