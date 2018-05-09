@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 
 class fileEvaluation:
     def __init__(self, ts_path_name, target_fps=None):
+        '''if not type(ts_path_name) == type([]):
+        ts_path_name = [ts_path_name]
+        '''
         self.target_fps = target_fps
         self.file_path = ts_path_name
         self.lines = []
@@ -16,7 +19,27 @@ class fileEvaluation:
             self.lines = f.readlines()
         self.find_framerate()
 
+    # Helper function, returns a normalized multiplier and time unit when given a
+    #     num in ms
+    def get_time_units(self, num):
+        if num >= 3600000:
+            multiplier = 1/3600000
+            units = 'hr'
+        elif num >= 60000:
+            multiplier = 1/60000
+            units = 'min'
+        elif num > 1000:
+            multiplier = 1/1000
+            units = 'sec'
+        elif num > 1:
+            multiplier = 1
+            units = 'ms'
+        else:
+            multiplier = 1000
+            units = '\xB5s'
+        return (multiplier, units)
 
+            
     def find_standard_deviation(self):
         total = 0
         prev_time = 0;
@@ -33,16 +56,9 @@ class fileEvaluation:
             deviation_sum += (float(line)-prev_time-mean)**2
             prev_time = float(line)
         standard_deviation = deviation_sum / len(self.lines)
-        
-    
-        units = 'ms'
-        if standard_deviation < 1:
-            units = '\xB5s'
-            standard_deviation *= 1000.0
-        elif standard_deviation >= 1000:
-            units = 'sec'
-            standard_deviation /= 1000.0
-        
+        (multiplier, units) = self.get_time_units(standard_deviation)
+        standard_deviation *= multiplier
+
         self.standard_deviation = ('%f %s' % (standard_deviation, units))
 
         
@@ -182,7 +198,7 @@ class fileEvaluation:
         elif time_gap * 1000 > 1:
             multiplier = 1000
             units = 'ms'
-            
+
         # Plotting everything
         plt.plot(hits_x[1:], [i*multiplier for i in hits_y[1:]], 'go')
         plt.plot(dropped_x[1:], [i*multiplier for i in dropped_y[1:]], 'ro')
@@ -199,15 +215,16 @@ class fileEvaluation:
     def plot_timestamps(self):
         list_of_times = []
         x_axis = []
-        last_time = 0
-        
+        (multiplier, units) = self.get_time_units(float(self.lines[1]) - float(self.lines[0]))
+        last_time = float(self.lines[0])*multiplier
+
         for i, timestamp in enumerate(self.lines[1:]):
-            list_of_times.append(float(timestamp) / 1000.0 - last_time)
-            last_time = float(timestamp) / 1000.0
+            list_of_times.append(float(timestamp) * multiplier - last_time)
+            last_time = float(timestamp) * multiplier
             x_axis.append(i)
 
         plt.plot(x_axis, list_of_times, 'g')
-        plt.ylabel('sec')
+        plt.ylabel(units)
         plt.xlabel('Timestamp')
         plt.show()
         plt.close()
