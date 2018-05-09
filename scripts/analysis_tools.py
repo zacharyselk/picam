@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 from file_analysis import fileAnalysis
 
 
-class evaluate:
+class evaluate(object):
+    __slot__ = ('x_size', 'y_size', 'plot_style')
     def __init__(self, ts_path_name):
         if type(ts_path_name) != type([]):
             ts_path_name = [ts_path_name]
@@ -10,41 +11,80 @@ class evaluate:
         self.file_path = ts_path_name
         self.files = []
         self.plot_style = 'vertical'
+        self.x_size = 8
+        self.y_size = 6
 
-        for i in range(len(self.file_paths)):
+        for i in range(len(self.file_path)):
             self.files.append(fileAnalysis(self.file_path[i]))
 
 
-    def style(self, style):
-        self.plot_style = style
+    def plot(self, plot_data):
+        # Get current size
+        fig_size = plt.rcParams["figure.figsize"]
+        fig_size[0] = self.x_size
+        fig_size[1] = self.y_size
+        plt.rcParams["figure.figsize"] = fig_size
+        
 
-            
-    def plot(plot_data):
         if len(plot_data) == 1:
-            plt.plot(*plot_data[0].get_draw_lines())
+            plt.set_title(self.file_path[0].split('/')[-1][:-3])
             plt.xlabel(plot_data[0].x_label)
+            plt.ylabel(plot_data[0].y_label)
+            plt.plot(*plot_data[0].get_draw_lines()[0])
+
             
         elif len(plot_data) == 4:
-            p, ((sub_plot1, sub_plot2), (sub_plot3, sub_plot4)) = plt.subpots(2, 2, sharex='col', sharey='row')
-            sub_plot1.plot(*plot_data[0])
-            sub_plot2.plot(*plot_data[1])
-            sub_plot3.plot(*plot_data[2])
-            sub_plot4.plot(*plot_data[3])
+            p, ((sub_plot1, sub_plot2), (sub_plot3, sub_plot4)) = plt.subplots(2, 2, sharex='col', sharey='row')
+            p.subplots_adjust(hspace=0.25, wspace=0.25)
+
+            sub_plot1.set_title(self.file_path[0].split('/')[-1][:-3])
+            #sub_plot1.xlabel(plot_data[0].x_label)
+            #sub_plot1.ylabel(plot_data[0].y_label)
+            for line in plot_data[0].get_draw_lines():            
+                sub_plot1.plot(*line)
+
+            sub_plot2.set_title(self.file_path[1].split('/')[-1][:-3])
+            #sub_plot2.xlabel(plot_data[1].x_label)
+            #sub_plot2.ylabel(plot_data[1].y_label)
+            for line in plot_data[1].get_draw_lines():
+                sub_plot2.plot(*line)
+
+            sub_plot3.set_title(self.file_path[2].split('/')[-1][:-3])
+            #sub_plot3.xlabel(plot_data[2].x_label)
+            #sub_plot3.ylabel(plot_data[2].y_label)
+            for line in plot_data[2].get_draw_lines():
+                sub_plot3.plot(*line)
+
+            sub_plot4.set_title(self.file_path[3].split('/')[-1][:-3])
+            #sub_plot4.xlabel(plot_data[2].x_label)
+            #sub_plot4.ylabel(plot_data[2].y_label)
+            for line in plot_data[3].get_draw_lines():
+                sub_plot4.plot(*line)
 
         else:
-            p, sub_plots = plt.subplots(len(plot_data))
-            for i in range(len(plot_data)):
-                sub_plots[i].title(self.file_path[i].split('/')[-1])
-                sub_plots[i].plot(*plot_data[i])
+            if self.plot_style == 'horizontal':
+                p, sub_plots = plt.subplots(1, len(plot_data), sharey=True)
+            else:
+                p, sub_plots = plt.subplots(len(plot_data), sharex=True)
 
+            p.subplots_adjust(hspace=0.25, wspace=0.25)
+            for i in range(len(plot_data)):
+                sub_plots[i].set_title(self.file_path[i].split('/')[-1][:-3])
+                plt.xlabel(plot_data[i].x_label)
+                plt.ylabel(plot_data[i].y_label)
+                for line in plot_data[i].get_draw_lines():                    
+                    sub_plots[i].plot(*line)
+
+        plt.draw()
         plt.show()
         plt.close()
+        print('\n')
         
             
     def info(self):
         for i, obj in enumerate(self.files):
-            print(self.file_path[i])
-            ojb.info()
+            print(self.file_path[i].split('/')[-1][:-3])
+            obj.info()
             print('\n')
 
 
