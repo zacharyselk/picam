@@ -74,7 +74,7 @@ with picamera.PiCamera() as camera:
                'fps_' + str(sys.argv[3]) + '.' + str(sys.argv[4])
     camera.start_recording(TSOutput(camera, '/media/pi/untitled/other/test.h264',
                                     filename+'.ts', filename+'.lt'),
-                           format='h264')
+                           format=sys.argv[4])
 
     camera.wait_recording(float(sys.argv[1]))
     camera.stop_recording()
