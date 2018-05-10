@@ -27,7 +27,7 @@ class evaluate(object):
         
 
         if len(plot_data) == 1:
-            plt.set_title(self.file_path[0].split('/')[-1][:-3])
+            plt.title(self.file_path[0].split('/')[-1][:-3])
             plt.xlabel(plot_data[0].x_label)
             plt.ylabel(plot_data[0].y_label)
             plt.plot(*plot_data[0].get_draw_lines()[0])
