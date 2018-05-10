@@ -62,11 +62,11 @@ class TSOutput(object):
 
 
 with picamera.PiCamera() as camera:
-    if sys.argv[3] == '480p':
+    if sys.argv[3][:4] == '480p':
         camera.resolution = (640, 480)
-    elif sys.argv[3] == '720p':
+    elif sys.argv[3][:4] == '720p':
         camera.resolution = (1280, 720)
-    elif sys.argv[3] == '1080p':
+    elif sys.argv[3][:4] == '1080':
         camera.resolution = (1920, 1080)
         
     camera.framerate = float(sys.argv[2])
