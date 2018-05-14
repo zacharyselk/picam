@@ -22,7 +22,7 @@ class TSOutput(object):
         self.msg_flag = False
         
         self.ts_output_stream = io.open(ts_filename, 'w')
-        #self.local_time_output_stream = io.open(local_time_filename, 'w')
+        self.local_time_output_stream = io.open(local_time_filename, 'w')
         self.start_time = None
 
     def size_of(self, string):
