@@ -15,7 +15,7 @@ byte_count = 0
 class TSOutput(object):
     def __init__(self, camera, v_filename, ts_filename, local_time_filename):
         self.camera = camera
-        self.video_output_stream = io.open(v_filename, 'wb')
+        #self.video_output_stream = io.open(v_filename, 'wb')
         #self.video_output_stream = io.open('/dev/null', 'wb')
         #self.video_output_stream = socket.InetStream(s=None)
         #self.video_output_stream.connect('142.66.96.154', 1122)
@@ -39,9 +39,10 @@ class TSOutput(object):
         # Frames that are too small?
         #if sys.getsizeof(buf) < 500:
         #    print(buf)
-        self.video_output_stream.write(buf)
-        global byte_count
-        byte_count += int(sys.getsizeof(buf))
+        #self.video_output_stream.write(buf)
+        if not self.camera.frame.complete:
+            print('Not Complete')
+            
         if self.camera.frame.complete and self.camera.frame.timestamp:
             if self.start_time is None:
                 self.start_time = self.camera.frame.timestamp
@@ -50,12 +51,12 @@ class TSOutput(object):
             #self.local_time_output_stream.write(str(time.time()))
 
     def flush(self):
-        self.video_output_stream.flush()
+        #self.video_output_stream.flush()
         self.ts_output_stream.flush()
         #self.local_time_output_stream.flush()
 
     def close(self):
-        self.video_output_stream.close()
+        #self.video_output_stream.close()
         self.ts_output_stream.close()
         #self.local_time_output_stream.close()
 
