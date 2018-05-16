@@ -1,4 +1,4 @@
-# Performs analysis on a .ts file giving graphical and statistical information
+ # Performs analysis on a .ts file giving graphical and statistical information
 
 import sys
 import math
