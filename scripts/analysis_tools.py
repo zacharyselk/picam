@@ -33,31 +33,24 @@ class evaluate(object):
             plt.plot(*plot_data[0].get_draw_lines()[0])
 
             
-        elif len(plot_data) == 4:
+        # Dont use for now
+        elif len(plot_data) == -1:
             p, ((sub_plot1, sub_plot2), (sub_plot3, sub_plot4)) = plt.subplots(2, 2, sharex='col', sharey='row')
             p.subplots_adjust(hspace=0.25, wspace=0.25)
 
             sub_plot1.set_title(self.file_path[0].split('/')[-1][:-3])
-            #sub_plot1.xlabel(plot_data[0].x_label)
-            #sub_plot1.ylabel(plot_data[0].y_label)
             for line in plot_data[0].get_draw_lines():            
                 sub_plot1.plot(*line)
 
             sub_plot2.set_title(self.file_path[1].split('/')[-1][:-3])
-            #sub_plot2.xlabel(plot_data[1].x_label)
-            #sub_plot2.ylabel(plot_data[1].y_label)
             for line in plot_data[1].get_draw_lines():
                 sub_plot2.plot(*line)
 
             sub_plot3.set_title(self.file_path[2].split('/')[-1][:-3])
-            #sub_plot3.xlabel(plot_data[2].x_label)
-            #sub_plot3.ylabel(plot_data[2].y_label)
             for line in plot_data[2].get_draw_lines():
                 sub_plot3.plot(*line)
 
             sub_plot4.set_title(self.file_path[3].split('/')[-1][:-3])
-            #sub_plot4.xlabel(plot_data[2].x_label)
-            #sub_plot4.ylabel(plot_data[2].y_label)
             for line in plot_data[3].get_draw_lines():
                 sub_plot4.plot(*line)
 

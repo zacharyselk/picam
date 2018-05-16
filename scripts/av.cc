@@ -12,7 +12,7 @@ int main()
   AVCodecParserContext *codecContext = av_parser_init(AV_CODEC_ID_H264);
   AVFormatContext *formatContext = avformat_alloc_context();
 
-  avformat_open_input(&formatContext, '../video/', NULL, NULL);
+  avformat_open_input(&formatContext, "../video/", NULL, NULL);
   
   
   return 0;
