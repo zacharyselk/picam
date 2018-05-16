@@ -81,6 +81,11 @@ class evaluate(object):
             print('\n')
 
 
+    def dropped_frames(self):
+        for obj in self.files:
+            obj.dropped_frames()
+            
+
     def plot_framerate(self):
         plot_data = []
         for obj in self.files:

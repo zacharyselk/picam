@@ -13,18 +13,11 @@ class plot:
         #self.x_label = ''
         #self.y_label = ''
 
+        
     def add_line(self, x_axis, y_axis, color):
         self.draw_lines.append((x_axis, y_axis, color))
 
-    '''
-    def x_label(self, label):
-        self.x_label = label
 
-
-    def y_label(self, label):
-        self.y_label = label
-
-    '''
     def get_draw_lines(self):
         return self.draw_lines
 
@@ -257,3 +250,6 @@ class fileAnalysis:
         p.x_label = 'Timestamp'
 
         return p
+
+    def plot_dropped_frames(self):
+        pass
