@@ -116,3 +116,17 @@ class evaluate(object):
             plot_data.append(obj.plot_timestamps())
 
         self.plot(plot_data)
+
+
+    def plot_dropped_frames(self):
+        plot_data = []
+        for obj in self.files:
+            plot_data.append(obj.plot_dropped_frames())
+
+        plt.bar([1,2,3], plot_data)
+        plt.xticks([1,2,3], ('480p','720p','1080p'))
+        plt.ylabel('Dropped Frames')
+        plt.show()
+        plt.close()
+
+        
