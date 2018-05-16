@@ -129,15 +129,15 @@ class fileAnalysis:
                 elif len(frame) < 1:
                     dropped += 1
 
-            print('Dropped: %i' % dropped)
-            print('Extra: %i' % extra)
+        print('Dropped: %i' % dropped)
+        print('Extra: %i' % extra)
 
-            # If it is balanced then no frames where dropped, they where just
-            #     in a different timeframe
-            if(extra_count == 2*dropped):
-                print('Balanced')
-            else:
-                print('Unbalanced')
+        # If it is balanced then no frames where dropped, they where just
+        #     in a different timeframe
+        if(extra_count == 2*dropped):
+            print('Balanced')
+        else:
+            print('Unbalanced')
 
 
     # Plots the framerate of each frame in relation to the last frame
