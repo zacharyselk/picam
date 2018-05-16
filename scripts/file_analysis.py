@@ -242,6 +242,11 @@ class fileAnalysis:
 
         for i, timestamp in enumerate(self.lines[1:]):
             list_of_times.append(float(timestamp) * multiplier - last_time)
+
+            frames = int((float(timestamp)-last_time) / 1/self.framerate)
+            if frames > 1:
+                print(frames)
+            
             last_time = float(timestamp) * multiplier
             x_axis.append(i)
 
