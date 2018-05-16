@@ -10,6 +10,7 @@ class plot:
     
     def __init__(self, x_axis, y_axis, color):
         self.draw_lines = [(x_axis, y_axis, color)]
+        self.draw_bars = []
         #self.x_label = ''
         #self.y_label = ''
 
@@ -17,9 +18,15 @@ class plot:
     def add_line(self, x_axis, y_axis, color):
         self.draw_lines.append((x_axis, y_axis, color))
 
-
     def get_draw_lines(self):
         return self.draw_lines
+
+    
+    def add_bar(self, value):
+        self.draw_bars.append(value)
+
+    def get_draw_bars(self):
+        return self.draw_bars
 
         
                                
@@ -238,15 +245,11 @@ class fileAnalysis:
         list_of_times = []
         x_axis = []
         (multiplier, units) = self.get_time_units(float(self.lines[1]) - float(self.lines[0]))
-        last_time = float(self.lines[0])#*multiplier
+        last_time = float(self.lines[0])*multiplier
 
         for i, timestamp in enumerate(self.lines[1:]):
-            list_of_times.append(float(timestamp) - last_time)
+            list_of_times.append(float(timestamp)*multiplier - last_time)
 
-            frames = int((float(timestamp)-last_time)/1000 / 1 /self.framerate)
-            if frames > 1:
-                print(frames)
-            
             last_time = float(timestamp) * multiplier
             x_axis.append(i)
 
@@ -257,4 +260,16 @@ class fileAnalysis:
         return p
 
     def plot_dropped_frames(self):
-        pass
+        count = 0
+        list_of_times = []
+        last_time = float(self.lines[0])
+        inverted_framerate = 1.0/self.framerate * 1000
+
+        for timestamp in self.lines[1:]:
+            frames = int((float(timestamp)-last_time) / inverted_framerate)
+            if frames > 1:
+                count += frames-1
+        
+            last_time = float(timestamp)
+
+        return count
