@@ -88,7 +88,7 @@ class fileAnalysis:
             deviation_sum += (difference-mean)**2
 
         standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
-        (multiplier, units) = self.get_time_units(statndard_deviation)
+        (multiplier, units) = self.get_time_units(standard_deviation)
         standard_deviation *= multiplier
 
         self.standard_deviation = ('%f %s' % (standard_deviation, units))
@@ -106,6 +106,7 @@ class fileAnalysis:
         self.length = total_time
         ave = total_time / (len(self.lines)-1)
         self.framerate = 1.0/ave
+        self.find_time_differences()
         self.find_standard_deviation()        
 
 
