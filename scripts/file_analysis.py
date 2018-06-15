@@ -92,9 +92,14 @@ class fileAnalysis:
         for difference in self.time_difference:
             deviation_sum += (difference-mean)**2
 
+<<<<<<< HEAD
         standard_deviation = deviation_sum/len(self.time_difference)
         (multiplier, units) = self.get_time_units(standard_deviation)
         standard_deviation = math.sqrt(standard_deviation)
+=======
+        standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
+        (multiplier, units) = self.get_time_units(standard_deviation)
+>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
         standard_deviation *= multiplier
 
         self.standard_deviation = (standard_deviation, units)
@@ -109,6 +114,7 @@ class fileAnalysis:
 #             total_time += time - prev_time
 #             prev_time = time
             
+<<<<<<< HEAD
 #         self.length = total_time
 #         ave = total_time / (len(self.lines)-1)
 #         self.framerate = 1.0/ave
@@ -119,6 +125,13 @@ class fileAnalysis:
         self.find_framerate()
         self.find_standard_deviation()
         print(self.get_mean_difference())
+=======
+        self.length = total_time
+        ave = total_time / (len(self.lines)-1)
+        self.framerate = 1.0/ave
+        self.find_time_differences()
+        self.find_standard_deviation()        
+>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
 
 
     # Helper function, returns a normalized multiplier and time unit when given a
