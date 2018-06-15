@@ -94,6 +94,23 @@ class evaluate(object):
         self.plot(plot_data)
     
 
+    
+    def plot_standards(self):
+        mean_value = []
+        deviations = []
+        for obj in self.files:
+            mean_value.append(obj.get_mean_difference())
+            deviations.append(obj.get_standard_deviation())
+
+        fig, ax = plt.subplots()
+        bar = ax.bar(sorted(range(len(mean_value)), key=lambda x: mean_value[x]), 
+                     mean_value, yerr=deviations)
+
+        plt.draw()
+        plt.show()
+        plt.close()
+
+
     def plot_deviation(self, target_framerate):
         plot_data = []
         for obj in self.files:
@@ -123,8 +140,8 @@ class evaluate(object):
         for obj in self.files:
             plot_data.append(obj.plot_dropped_frames())
 
-        plt.bar([1,2,3], plot_data)
-        plt.xticks([1,2,3], ('480p','720p','1080p'))
+        plt.bar([3,2,1], plot_data)
+        plt.xticks([3,2,1], ('480p @ 120','720p @ 60','1080p @ 30'))
         plt.ylabel('Dropped Frames')
         plt.show()
         plt.close()

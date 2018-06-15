@@ -38,10 +38,10 @@ class fileAnalysis:
         self.total_time = 0
         self.time_difference = []
         self.standard_deviation = u''
-        
+
         with open(self.file_path, 'r') as f:
             self.lines = f.readlines()
-        self.find_framerate()
+        self.find_info()
 
 
     def find_time_differences(self):
@@ -51,34 +51,39 @@ class fileAnalysis:
 
         for timestamp in self.lines[1:]:
             difference = float(timestamp) - last_time
-            self.total_time += float(timestamp)
+            self.total_time += difference
             self.time_difference.append(difference)
             last_time = float(timestamp)
             
 
-    # # Called by init to get info data        
-    # def find_standard_deviation(self):
-    #     total = 0
-    #     prev_time = 0;
-        
-    #     for line in self.lines:
-    #         total += float(line) - prev_time
-    #         prev_time = float(line)
-    #     mean = total / len(self.lines)
+#     # Called by init to get info data        
+#     def find_standard_deviation(self):
+#         total = 0
+#         prev_time = float(self.lines[0]);
+      
+#         for line in self.lines[1:]:
+#             total += float(line) - prev_time
+#             prev_time = float(line)
+#         mean = total / (len(self.lines)-1)
 
-    #     deviation_sum = 0
-    #     prev_time = 0
+#         deviation_sum = 0
+#         prev_time = float(self.lines[0])
 
-    #     for line in self.lines:
-    #         deviation_sum += (float(line)-prev_time-mean)**2
-    #         prev_time = float(line)
-    #     standard_deviation = deviation_sum / len(self.lines)
-    #     (multiplier, units) = self.get_time_units(standard_deviation)
-                               
-    #     standard_deviation *= multiplier
-    #     standard_deviation = math.sqrt(standard_deviation)
-                               
-    #     self.standard_deviation = ('%f %s' % (standard_deviation, units))
+#         for line in self.lines[1:]:
+#             deviation_sum += (float(line)-prev_time-mean)**2
+#             prev_time = float(line)
+
+#         standard_deviation = deviation_sum / len(self.lines)
+#         (multiplier, units) = self.get_time_units(standard_deviation)
+                             
+#         standard_deviation *= multiplier
+#         standard_deviation = math.sqrt(standard_deviation)
+                             
+#         self.standard_deviation = ('%f %s' % (standard_deviation, units))
+
+    def find_framerate(self):
+        self.framerate = 1 / ((self.total_time/1000) / len(self.time_difference))
+
 
     def find_standard_deviation(self):
         mean = self.total_time / len(self.time_difference)
@@ -87,26 +92,33 @@ class fileAnalysis:
         for difference in self.time_difference:
             deviation_sum += (difference-mean)**2
 
-        standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
-        (multiplier, units) = self.get_time_units(statndard_deviation)
+        standard_deviation = deviation_sum/len(self.time_difference)
+        (multiplier, units) = self.get_time_units(standard_deviation)
+        standard_deviation = math.sqrt(standard_deviation)
         standard_deviation *= multiplier
 
-        self.standard_deviation = ('%f %s' % (standard_deviation, units))
+        self.standard_deviation = (standard_deviation, units)
     
-    # Called by init to get info data                
-    def find_framerate(self):
-        total_time = 0
-        prev_time = 0
-        for line in self.lines:
-            # Move from msec to sec
-            time = float(line) / 1000.0
-            total_time += time - prev_time
-            prev_time = time
+#     # Called by init to get info data                
+#     def find_framerate(self):
+#         total_time = 0
+#         prev_time = 0
+#         for line in self.lines:
+#             # Move from msec to sec
+#             time = float(line) / 1000.0
+#             total_time += time - prev_time
+#             prev_time = time
             
-        self.length = total_time
-        ave = total_time / (len(self.lines)-1)
-        self.framerate = 1.0/ave
-        self.find_standard_deviation()        
+#         self.length = total_time
+#         ave = total_time / (len(self.lines)-1)
+#         self.framerate = 1.0/ave
+#         self.find_standard_deviation()
+
+    def find_info(self):
+        self.find_time_differences()
+        self.find_framerate()
+        self.find_standard_deviation()
+        print(self.get_mean_difference())
 
 
     # Helper function, returns a normalized multiplier and time unit when given a
@@ -130,12 +142,20 @@ class fileAnalysis:
         return (multiplier, units)            
     
         
+    def get_mean_difference(self):
+        return self.total_time / len(self.time_difference)
+
+
+    def get_standard_deviation(self):
+        return self.standard_deviation[0]/1000
+
+
     # Displays simple information about the file
     def info(self):
-        print('  Sec: %s' % str(self.length))
+        print('  Sec: %s' % str(self.total_time/1000))
         print('  Frames: %s' % str(len(self.lines)-1))
         print('  Framerate: %s' % str(self.framerate))
-        print('  Standard Deviation: %s' % self.standard_deviation)
+        print('  Standard Deviation: %f %s' % self.standard_deviation)
 
         
     # Finds frames if a frame has deviated more than half the
