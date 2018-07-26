@@ -4,6 +4,11 @@ import sys
 import math
 import matplotlib.pyplot as plt
 
+try:
+    import cv2
+except:
+    print('Warning! Cannot import cv2')
+
 
 class plot:
     __slot__ = ('x_label', 'y_label')
@@ -32,6 +37,7 @@ class plot:
                                
 class fileAnalysis:
     def __init__(self, path_name):
+        self.path_name = path_name
         self.timestamp_path = path_name + '.timestamp.log'
         self.tracking_path = path_name + '.tracking.log'
         self.timestamp_lines = []
@@ -267,7 +273,35 @@ class fileAnalysis:
         p.x_label = 'Sec'
         
         return p
-            
+
+    def apply_tracking(self):
+        # try:
+        #     cap = cv2.VideoCapture(self.path_name)
+        # except:
+        try:
+            path = self.path_name.split('.')
+            path[-1] = 'mp4'
+            path = '.'.join(path)
+            cap = cv2.VideoCapture(path)
+        except Exception as e:
+            print('Error: %s' % e)
+            print(self.path_name)
+            return
+        
+        #while(cap.isOpened()):
+        for line in self.tracking_lines:
+            line = line.split(',')
+            box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
+            ret, frame = cap.read()
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray = cv2.rectangle(gray, (box[0], box[1]), (box[2], box[3]), (255, 255, 255), 2)
+            cv2.imshow('frame', gray)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+    
     # Plots the framerate of each frame in relation to the last frame
     def plot_framerate(self):
         x = []

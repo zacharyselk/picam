@@ -134,6 +134,10 @@ class evaluate(object):
 
         self.plot(plot_data)
 
+    def apply_tracking(self):
+        for obj in self.files:
+            obj.apply_tracking()
+        
     def plot_timestamps(self):
         plot_data = []
         for obj in self.files:
