@@ -288,19 +288,44 @@ class fileAnalysis:
             print(self.path_name)
             return
         
+        sleeping = False
+        prev_box = None
+        time_waited = 0
+        
         #while(cap.isOpened()):
         for line in self.tracking_lines:
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            gray = cv2.rectangle(gray, (box[0], box[1]), (box[2], box[3]), (255, 255, 255), 2)
+            gray = cv2.rectangle(gray, (box[0], box[1]),
+                                 (box[2], box[3]), (255, 255, 255), 2)
+            if(prev_box == box):
+                time_waited += 1
+            else:
+                time_waited = 0
+
+            prev_box = box
+                
+            if(time_waited >= 200):
+                sleeping = True
+            else:
+                sleeping = False
+            
+            msg = 'Awake'
+            if sleeping:
+                msg = 'Sleeping'
+                
+            cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
+                        1, (255,255,255), 3, 8)
+            
             cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
         cap.release()
         cv2.destroyAllWindows()
+                
     
     # Plots the framerate of each frame in relation to the last frame
     def plot_framerate(self):
