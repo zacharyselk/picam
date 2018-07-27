@@ -1,4 +1,4 @@
- # Performs analysis on a .ts file giving graphical and statistical information
+ # Performs analysis on a .timestamp.log file giving graphical and statistical information
 
 import sys
 import math
@@ -31,25 +31,38 @@ class plot:
         
                                
 class fileAnalysis:
-    def __init__(self, ts_path_name):
-        self.file_path = ts_path_name
-        self.lines = []
+    def __init__(self, path_name):
+        self.timestamp_path = path_name + '.timestamp.log'
+        self.tracking_path = path_name + '.tracking.log'
+        self.timestamp_lines = []
+        self.tracking_lines = []
+        self.tracking = False
         self.framerate = 0
         self.total_time = 0
         self.time_difference = []
         self.standard_deviation = u''
 
-        with open(self.file_path, 'r') as f:
-            self.lines = f.readlines()
+        with open(self.timestamp_path, 'r') as f:
+            self.timestamp_lines = f.readlines()
+            
+        # Check to see if the file exists
+        try:
+            with open(self.tracking_path, 'r') as f:
+                # Ignoring the first line to match up the timestamps
+                self.tracking_lines = f.readlines()[1:]
+            self.tracking = True
+        except:
+            pass
+
         self.find_info()
 
 
     def find_time_differences(self):
         self.time_difference = []
         self.total_time = 0
-        last_time = float(self.lines[0])
+        last_time = float(self.timestamp_lines[0])
 
-        for timestamp in self.lines[1:]:
+        for timestamp in self.timestamp_lines[1:]:
             difference = float(timestamp) - last_time
             self.total_time += difference
             self.time_difference.append(difference)
@@ -59,21 +72,21 @@ class fileAnalysis:
 #     # Called by init to get info data        
 #     def find_standard_deviation(self):
 #         total = 0
-#         prev_time = float(self.lines[0]);
+#         prev_time = float(self.timestamp_lines[0]);
       
-#         for line in self.lines[1:]:
+#         for line in self.timestamp_lines[1:]:
 #             total += float(line) - prev_time
 #             prev_time = float(line)
-#         mean = total / (len(self.lines)-1)
+#         mean = total / (len(self.timestamp_lines)-1)
 
 #         deviation_sum = 0
-#         prev_time = float(self.lines[0])
+#         prev_time = float(self.timestamp_lines[0])
 
-#         for line in self.lines[1:]:
+#         for line in self.timestamp_lines[1:]:
 #             deviation_sum += (float(line)-prev_time-mean)**2
 #             prev_time = float(line)
 
-#         standard_deviation = deviation_sum / len(self.lines)
+#         standard_deviation = deviation_sum / len(self.timestamp_lines)
 #         (multiplier, units) = self.get_time_units(standard_deviation)
                              
 #         standard_deviation *= multiplier
@@ -92,14 +105,14 @@ class fileAnalysis:
         for difference in self.time_difference:
             deviation_sum += (difference-mean)**2
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
         standard_deviation = deviation_sum/len(self.time_difference)
         (multiplier, units) = self.get_time_units(standard_deviation)
         standard_deviation = math.sqrt(standard_deviation)
-=======
-        standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
-        (multiplier, units) = self.get_time_units(standard_deviation)
->>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
+#=======
+#        standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
+#        (multiplier, units) = self.get_time_units(standard_deviation)
+#>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
         standard_deviation *= multiplier
 
         self.standard_deviation = (standard_deviation, units)
@@ -108,15 +121,15 @@ class fileAnalysis:
 #     def find_framerate(self):
 #         total_time = 0
 #         prev_time = 0
-#         for line in self.lines:
+#         for line in self.timestamp_lines:
 #             # Move from msec to sec
 #             time = float(line) / 1000.0
 #             total_time += time - prev_time
 #             prev_time = time
             
-<<<<<<< HEAD
+#<<<<<<< HEAD
 #         self.length = total_time
-#         ave = total_time / (len(self.lines)-1)
+#         ave = total_time / (len(self.timestamp_lines)-1)
 #         self.framerate = 1.0/ave
 #         self.find_standard_deviation()
 
@@ -125,13 +138,13 @@ class fileAnalysis:
         self.find_framerate()
         self.find_standard_deviation()
         print(self.get_mean_difference())
-=======
-        self.length = total_time
-        ave = total_time / (len(self.lines)-1)
-        self.framerate = 1.0/ave
-        self.find_time_differences()
-        self.find_standard_deviation()        
->>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
+#=======
+#        self.length = total_time
+#        ave = total_time / (len(self.timestamp_lines)-1)
+#        self.framerate = 1.0/ave
+#        self.find_time_differences()
+#        self.find_standard_deviation()        
+#>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
 
 
     # Helper function, returns a normalized multiplier and time unit when given a
@@ -166,7 +179,7 @@ class fileAnalysis:
     # Displays simple information about the file
     def info(self):
         print('  Sec: %s' % str(self.total_time/1000))
-        print('  Frames: %s' % str(len(self.lines)-1))
+        print('  Frames: %s' % str(len(self.timestamp_lines)-1))
         print('  Framerate: %s' % str(self.framerate))
         print('  Standard Deviation: %f %s' % self.standard_deviation)
 
@@ -175,11 +188,11 @@ class fileAnalysis:
     #     inverse of the framerate from the standard then determins
     #     whether a timeframe is missing a frame or has too many frames
     def dropped_frames(self):
-        frames = len(self.lines)-1
+        frames = len(self.timestamp_lines)-1
         list_of_frames = [[]*frames]
         INVERSE_FPS = 1.0/self.framerate
         
-        for line in self.lines:
+        for line in self.timestamp_lines:
             time = float(line) / 1000.0
             index = int(time/INVERSE_FPS + 0.5)
             while index >= len(list_of_frames):
@@ -207,12 +220,60 @@ class fileAnalysis:
             print('Unbalanced')
 
 
+    def get_point(self, box):
+        """Retruns the center point of a box
+        
+        Args:
+            box: A tuple defined as (x0, y0, x1, y1) where (x0, y0) is the top
+            left corner and (x1, y1) is the bottom right corner
+        """
+        box = box.split(',')
+        for i in range(len(box)):
+            box[i] = float(box[i])
+
+        if box[0] is -1 and box[1] is -1 and box[2] is -1 and box[3] is -1:
+            return 0
+        return (box[0] + (box[2]-box[0])/2, box[1] + (box[3]-box[1])/2)
+
+    def calc_dist(self, point0, point1):
+        """Returns the euclidean distance between point0 and point1"""
+        return math.sqrt((point0[0]-point1[0])**2 + (point0[1]-point1[1])**2)
+
+    def plot_tracking(self):
+        if self.tracking is False:
+            print('Sorry, there was no tracking file found')
+            return
+
+        if len(self.timestamp_lines) != len(self.tracking_lines):
+            print('Not equal')
+            print(len(self.timestamp_lines))
+            print(len(self.tracking_lines))
+            return
+
+        x = []  # The x value of all the points
+        y = []  # The y value of all the points
+        # The last timestamp
+        #last_time = float(self.timestamp_lines[0])
+        # The last center point
+        last_point = self.get_point(self.tracking_lines[0])
+        for i in range(len(self.tracking_lines)-1):
+            point = self.get_point(self.tracking_lines[i+1])
+            y.append(self.calc_dist(point, last_point))
+            x.append(float(self.timestamp_lines[i+1])/1000)  # Convert to sec
+            last_point = point
+        
+        p = plot(x, y, 'g')
+        p.y_label = 'Distance (px)'
+        p.x_label = 'Sec'
+        
+        return p
+            
     # Plots the framerate of each frame in relation to the last frame
     def plot_framerate(self):
         x = []
         y = []
-        last_time = float(self.lines[0])
-        for line in self.lines[1:]:
+        last_time = float(self.timestamp_lines[0])
+        for line in self.timestamp_lines[1:]:
             cur_time = float(line) / 1000.0
             fps = 1.0/(cur_time - last_time)
             x.append(cur_time)
@@ -242,8 +303,8 @@ class fileAnalysis:
         line_num = 0      # What line from the file is being used
         count = 0         # Counting the number of frames
         
-        while(line_num < len(self.lines)):
-            time = float(self.lines[line_num]) / 1000.0
+        while(line_num < len(self.timestamp_lines)):
+            time = float(self.timestamp_lines[line_num]) / 1000.0
             
             # Frame was either dropped or very delayed
             if time >= correct_time + time_gap:
@@ -304,10 +365,10 @@ class fileAnalysis:
     def plot_timestamps(self):
         list_of_times = []
         x_axis = []
-        (multiplier, units) = self.get_time_units(float(self.lines[1]) - float(self.lines[0]))
-        last_time = float(self.lines[0])*multiplier
+        (multiplier, units) = self.get_time_units(float(self.timestamp_lines[1]) - float(self.timestamp_lines[0]))
+        last_time = float(self.timestamp_lines[0])*multiplier
 
-        for i, timestamp in enumerate(self.lines[1:]):
+        for i, timestamp in enumerate(self.timestamp_lines[1:]):
             list_of_times.append(float(timestamp)*multiplier - last_time)
 
             last_time = float(timestamp) * multiplier
@@ -322,10 +383,10 @@ class fileAnalysis:
     def plot_dropped_frames(self):
         count = 0
         list_of_times = []
-        last_time = float(self.lines[0])
+        last_time = float(self.timestamp_lines[0])
         inverted_framerate = 1.0/self.framerate * 1000
 
-        for timestamp in self.lines[1:]:
+        for timestamp in self.timestamp_lines[1:]:
             frames = int((float(timestamp)-last_time) / inverted_framerate)
             if frames > 1:
                 count += frames-1
