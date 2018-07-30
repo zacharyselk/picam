@@ -290,32 +290,25 @@ class fileAnalysis:
         
         sleeping = False
         prev_box = None
-        time_waited = 0
+        seconds_waited = 0
         
         #while(cap.isOpened()):
-        for line in self.tracking_lines:
+        for i, line in enumerate(self.tracking_lines[:-1]):
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.rectangle(gray, (box[0], box[1]),
                                  (box[2], box[3]), (255, 255, 255), 2)
-            if(prev_box == box):
-                time_waited += 1
+            if prev_box == box:
+                seconds_waited += self.time_difference[i] / 1000
             else:
-                time_waited = 0
+                seconds_waited = 0
 
             prev_box = box
                 
-            if(time_waited >= 200):
-                sleeping = True
-            else:
-                sleeping = False
-            
-            msg = 'Awake'
-            if sleeping:
-                msg = 'Sleeping'
-                
+            msg = "Sleeping" if seconds_waited >= 10 else "Awake"
+                                       
             cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
                         1, (255,255,255), 3, 8)
             
