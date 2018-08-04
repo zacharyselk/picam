@@ -296,6 +296,8 @@ class fileAnalysis:
         for i, line in enumerate(self.tracking_lines[:-1]):
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
+            buzz = int(line[4])
+            print(buzz)
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.rectangle(gray, (box[0], box[1]),
@@ -308,10 +310,12 @@ class fileAnalysis:
             prev_box = box
                 
             msg = "Sleeping" if seconds_waited >= 10 else "Awake"
-                                       
+                    
             cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
                         1, (255,255,255), 3, 8)
-            
+            if buzz == 1:
+                cv2.putText(gray, msg, (15, 260), cv2.FONT_HERSHEY_SIMPLEX, 
+                            1, (255, 255, 255), 3, 8)
             cv2.imshow('frame', gray)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
