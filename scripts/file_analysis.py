@@ -1,5 +1,6 @@
  # Performs analysis on a .timestamp.log file giving graphical and statistical information
 
+import io
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -288,6 +289,8 @@ class fileAnalysis:
             print(self.path_name)
             return
         
+        path = '/'.join(self.path_name.split('/')[:-1]) + '/'
+        sleep_writer = io.open(path + '__TMP__.sleeping.log', 'w')
         sleeping = False
         prev_box = None
         seconds_waited = 0
@@ -315,7 +318,12 @@ class fileAnalysis:
 
             prev_box = box
                 
-            msg = "Sleeping" if seconds_waited >= 20 else "Awake"
+            msg = 'Awake'
+            if seconds_waited >= 20:
+                msg = 'Sleeping'
+                sleep_writer.write(u'1\n')
+            else:
+                sleep_writer.write(u'0\n')
                     
             cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
                         1, (255,255,255), 3, 8)
@@ -334,9 +342,10 @@ class fileAnalysis:
             #count += 1
             #if count > 1000:
             #    break
-
+        
         if write is not None:
             writer.release()
+        sleep_writer.close()
         cap.release()
         cv2.destroyAllWindows()
                 
