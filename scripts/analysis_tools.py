@@ -1,9 +1,28 @@
+"""Defines the class used to analyze and visualize data about captured videos.
+
+   Author: Zachary Selk <zrselk@gmail.com>
+   Github: www.github.com/zacharyselk
+   Date  : June 2018
+
+  Style-Guide: https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md
+"""
+
 import matplotlib.pyplot as plt
 from file_analysis import fileAnalysis
 
 
 class evaluate(object):
-    __slot__ = ('x_size', 'y_size', 'plot_style')
+    """A class that plots frame and tracking data graphs using matplotlib.
+
+    Args:
+        ts_path_name: The path name to the video data file.
+
+    Attributes:
+        x_size: Width of the graph to be drawn.
+        y_size: Height of the graph to be drawn.
+        plot_style: Style of the graph to be drawn.
+    """
+    __slots__ = ('x_size', 'y_size', 'plot_style')
     def __init__(self, ts_path_name):
         if type(ts_path_name) != type([]):
             ts_path_name = [ts_path_name]
@@ -19,6 +38,11 @@ class evaluate(object):
 
 
     def plot(self, plot_data):
+        """Plots data in a graph.
+
+        Args:
+            plot_data: An matplotlib object containing the data to be plotted.
+        """
         # Get current size
         fig_size = plt.rcParams["figure.figsize"]
         fig_size[0] = self.x_size
@@ -35,7 +59,9 @@ class evaluate(object):
             
         # Dont use for now
         elif len(plot_data) == -1:
-            p, ((sub_plot1, sub_plot2), (sub_plot3, sub_plot4)) = plt.subplots(2, 2, sharex='col', sharey='row')
+            p, ((sub_plot1, sub_plot2), (sub_plot3, sub_plot4)) =
+            plt.subplots(2, 2, sharex='col', sharey='row')
+            
             p.subplots_adjust(hspace=0.25, wspace=0.25)
 
             sub_plot1.set_title(self.file_path[0].split('/')[-1][:-3])
@@ -75,6 +101,9 @@ class evaluate(object):
         
             
     def info(self):
+        """Prints general information about files.
+
+        """
         for i, obj in enumerate(self.files):
             print(self.file_path[i].split('/')[-1][:-3])
             obj.info()
@@ -82,11 +111,17 @@ class evaluate(object):
 
 
     def dropped_frames(self):
+        """Prints number of frames dropped in video files.
+
+        """
         for obj in self.files:
             obj.dropped_frames()
             
 
     def plot_framerate(self):
+        """Plots framerate of video files.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_framerate())
@@ -96,6 +131,9 @@ class evaluate(object):
 
     
     def plot_standards(self):
+        """Plots standard deviation of video framerate drops.
+
+        """
         mean_value = []
         deviations = []
         for obj in self.files:
@@ -103,8 +141,7 @@ class evaluate(object):
             deviations.append(obj.get_standard_deviation())
 
         fig, ax = plt.subplots()
-        bar = ax.bar(sorted(range(len(mean_value)), key=lambda x: mean_value[x]), 
-                     mean_value, yerr=deviations)
+        bar = ax.bar(sorted(range(len(mean_value)), key=lambda x: mean_value[x]), mean_value, yerr=deviations)
 
         plt.draw()
         plt.show()
@@ -112,6 +149,9 @@ class evaluate(object):
 
 
     def plot_deviation(self, target_framerate):
+        """Plots standard deviation from target framerate.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_framerate(target_framerate))
@@ -120,6 +160,9 @@ class evaluate(object):
 
 
     def plot_relative_deviation(self):
+        """Plots relative deviation from target framerate.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_relative_deviation())
@@ -128,6 +171,9 @@ class evaluate(object):
 
 
     def plot_tracking(self):
+        """Plots relative deviation from target framerate.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_tracking())
@@ -135,10 +181,16 @@ class evaluate(object):
         self.plot(plot_data)
 
     def apply_tracking(self):
+        """Applys tracking to multiple files.
+
+        """
         for obj in self.files:
             obj.apply_tracking()
         
     def plot_timestamps(self):
+        """Plots timestamps from multiple files.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_timestamps())
@@ -147,6 +199,9 @@ class evaluate(object):
 
 
     def plot_dropped_frames(self):
+        """Plots dropped frames from multiple files.
+
+        """
         plot_data = []
         for obj in self.files:
             plot_data.append(obj.plot_dropped_frames())

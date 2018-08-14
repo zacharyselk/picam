@@ -32,7 +32,6 @@ class plot:
 
     def get_draw_bars(self):
         return self.draw_bars
-
         
                                
 class fileAnalysis:
