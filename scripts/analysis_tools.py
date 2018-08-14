@@ -180,12 +180,13 @@ class evaluate(object):
 
         self.plot(plot_data)
 
-    def apply_tracking(self):
+
+    def apply_tracking(self, write=None, display=True):
         """Applys tracking to multiple files.
 
         """
         for obj in self.files:
-            obj.apply_tracking()
+            obj.apply_tracking(write, display)
         
     def plot_timestamps(self):
         """Plots timestamps from multiple files.

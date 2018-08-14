@@ -1,5 +1,6 @@
  # Performs analysis on a .timestamp.log file giving graphical and statistical information
 
+import io
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -273,7 +274,7 @@ class fileAnalysis:
         
         return p
 
-    def apply_tracking(self):
+    def apply_tracking(self, write, display):
         # try:
         #     cap = cv2.VideoCapture(self.path_name)
         # except:
@@ -287,14 +288,24 @@ class fileAnalysis:
             print(self.path_name)
             return
         
+        path = '/'.join(self.path_name.split('/')[:-1]) + '/'
+        sleep_writer = io.open(path + '__TMP__.sleeping.log', 'w')
         sleeping = False
         prev_box = None
         seconds_waited = 0
+        #count = 0
+        writer = None
+        if write is not None:
+            writer = cv2.VideoWriter(write, 0x00000021, 30, (640, 480), False)
         
         #while(cap.isOpened()):
         for i, line in enumerate(self.tracking_lines[:-1]):
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
+            try:
+                buzz = int(line[4])
+            except:
+                pass
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.rectangle(gray, (box[0], box[1]),
@@ -306,15 +317,34 @@ class fileAnalysis:
 
             prev_box = box
                 
-            msg = "Sleeping" if seconds_waited >= 10 else "Awake"
-                                       
+            msg = 'Awake'
+            if seconds_waited >= 20:
+                msg = 'Sleeping'
+                sleep_writer.write(u'1\n')
+            else:
+                sleep_writer.write(u'0\n')
+                    
             cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
                         1, (255,255,255), 3, 8)
-            
-            cv2.imshow('frame', gray)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
+            try:
+                if buzz == 1:
+                    cv2.putText(gray, 'Buzz', (15, 600), cv2.FONT_HERSHEY_SIMPLEX, 
+                                1, (255, 255, 255), 3, 8)
+            except:
+                pass
+            if display is True:
+                cv2.imshow('frame', gray)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            if write is not None:
+                writer.write(gray)
+            #count += 1
+            #if count > 1000:
+            #    break
+        
+        if write is not None:
+            writer.release()
+        sleep_writer.close()
         cap.release()
         cv2.destroyAllWindows()
                 
