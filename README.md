@@ -1,5 +1,4 @@
 # picam
 
-Description of the project
-
-all post proccesing
+This project is designed to perform post-processing object tracking on video
+captured by a PiCamera using the PiCameraApp software created by Bill Williams.

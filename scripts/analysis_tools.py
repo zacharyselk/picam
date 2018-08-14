@@ -15,7 +15,7 @@ class evaluate(object):
     """A class that plots frame and tracking data graphs using matplotlib.
 
     Args:
-        ts_path_name: The path name to the video data file.
+        ts_path_name: The path name to the video time stamp file.
 
     Attributes:
         x_size: Width of the graph to be drawn.
@@ -212,5 +212,3 @@ class evaluate(object):
         plt.ylabel('Dropped Frames')
         plt.show()
         plt.close()
-
-        

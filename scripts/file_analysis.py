@@ -1,4 +1,12 @@
- # Performs analysis on a .timestamp.log file giving graphical and statistical information
+"""Performs analysis on a .timestamp.log file giving graphical and 
+   statistical information
+
+   Author: Zachary Selk <zrselk@gmail.com>
+   Github: www.github.com/zacharyselk
+   Date  : June 2018
+
+  Style-Guide: https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md
+"""
 
 import io
 import sys
@@ -12,18 +20,27 @@ except:
 
 
 class plot:
-    __slot__ = ('x_label', 'y_label')
+    """Plots data in a graph.
+
+        Args:
+            plot_data: An matplotlib object containing the data to be plotted.
+
+        Attributes:
+            x_label: Label for the x-axis of the graph.
+            y_label: Label for the y-axis of the graph.
+    """
+    
+    __slots__ = ('x_label', 'y_label')
     
     def __init__(self, x_axis, y_axis, color):
         self.draw_lines = [(x_axis, y_axis, color)]
         self.draw_bars = []
-        #self.x_label = ''
-        #self.y_label = ''
 
         
     def add_line(self, x_axis, y_axis, color):
         self.draw_lines.append((x_axis, y_axis, color))
 
+        
     def get_draw_lines(self):
         return self.draw_lines
 
@@ -31,11 +48,17 @@ class plot:
     def add_bar(self, value):
         self.draw_bars.append(value)
 
+        
     def get_draw_bars(self):
         return self.draw_bars
         
                                
 class fileAnalysis:
+    """Plots data in a graph.
+
+        Args:
+            path_name: The path to the timestamp file.
+    """
     def __init__(self, path_name):
         self.path_name = path_name
         self.timestamp_path = path_name + '.timestamp.log'
@@ -64,6 +87,9 @@ class fileAnalysis:
 
 
     def find_time_differences(self):
+        """Finds the time differences between 2 subsequent timestamps in order
+           to find framerate.
+        """
         self.time_difference = []
         self.total_time = 0
         last_time = float(self.timestamp_lines[0])
@@ -73,89 +99,41 @@ class fileAnalysis:
             self.total_time += difference
             self.time_difference.append(difference)
             last_time = float(timestamp)
+
             
-
-#     # Called by init to get info data        
-#     def find_standard_deviation(self):
-#         total = 0
-#         prev_time = float(self.timestamp_lines[0]);
-      
-#         for line in self.timestamp_lines[1:]:
-#             total += float(line) - prev_time
-#             prev_time = float(line)
-#         mean = total / (len(self.timestamp_lines)-1)
-
-#         deviation_sum = 0
-#         prev_time = float(self.timestamp_lines[0])
-
-#         for line in self.timestamp_lines[1:]:
-#             deviation_sum += (float(line)-prev_time-mean)**2
-#             prev_time = float(line)
-
-#         standard_deviation = deviation_sum / len(self.timestamp_lines)
-#         (multiplier, units) = self.get_time_units(standard_deviation)
-                             
-#         standard_deviation *= multiplier
-#         standard_deviation = math.sqrt(standard_deviation)
-                             
-#         self.standard_deviation = ('%f %s' % (standard_deviation, units))
-
     def find_framerate(self):
-        self.framerate = 1 / ((self.total_time/1000) / len(self.time_difference))
+        """Finds the framerate of the video using time differences.
+        """
+        self.framerate = 1 / ((self.total_time/1000) /
+                              len(self.time_difference))
 
-
+        
     def find_standard_deviation(self):
+        """Finds the standard deviation of the time differences
+        """
         mean = self.total_time / len(self.time_difference)
         deviation_sum = 0
-
         for difference in self.time_difference:
-            deviation_sum += (difference-mean)**2
-
-#<<<<<<< HEAD
+            deviation_sum += (difference - mean)**2
+            
         standard_deviation = deviation_sum/len(self.time_difference)
         (multiplier, units) = self.get_time_units(standard_deviation)
         standard_deviation = math.sqrt(standard_deviation)
-#=======
-#        standard_deviation = math.sqrt(deviation_sum/len(self.time_difference))
-#        (multiplier, units) = self.get_time_units(standard_deviation)
-#>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
         standard_deviation *= multiplier
-
         self.standard_deviation = (standard_deviation, units)
-    
-#     # Called by init to get info data                
-#     def find_framerate(self):
-#         total_time = 0
-#         prev_time = 0
-#         for line in self.timestamp_lines:
-#             # Move from msec to sec
-#             time = float(line) / 1000.0
-#             total_time += time - prev_time
-#             prev_time = time
-            
-#<<<<<<< HEAD
-#         self.length = total_time
-#         ave = total_time / (len(self.timestamp_lines)-1)
-#         self.framerate = 1.0/ave
-#         self.find_standard_deviation()
 
+        
     def find_info(self):
+        """Computes useful analysis data.
+        """
         self.find_time_differences()
         self.find_framerate()
         self.find_standard_deviation()
-        print(self.get_mean_difference())
-#=======
-#        self.length = total_time
-#        ave = total_time / (len(self.timestamp_lines)-1)
-#        self.framerate = 1.0/ave
-#        self.find_time_differences()
-#        self.find_standard_deviation()        
-#>>>>>>> ac062d44c6d1448c4fd9be0cdbb957c6931aface
 
-
-    # Helper function, returns a normalized multiplier and time unit when given a
-    #     num in ms
+        
     def get_time_units(self, num):
+        """returns units of time measurement and its corrisponding multiplier.
+        """
         if num >= 3600000:
             multiplier = 1/3600000
             units = 'hr'
@@ -181,19 +159,22 @@ class fileAnalysis:
     def get_standard_deviation(self):
         return self.standard_deviation[0]/1000
 
-
-    # Displays simple information about the file
+    
+    
     def info(self):
+        """Displays simple information about the file.
+        """
         print('  Sec: %s' % str(self.total_time/1000))
         print('  Frames: %s' % str(len(self.timestamp_lines)-1))
         print('  Framerate: %s' % str(self.framerate))
         print('  Standard Deviation: %f %s' % self.standard_deviation)
 
         
-    # Finds frames if a frame has deviated more than half the
-    #     inverse of the framerate from the standard then determins
-    #     whether a timeframe is missing a frame or has too many frames
     def dropped_frames(self):
+        """Finds frames if a frame has deviated more than half the
+           inverse of the framerate from the standard then determins
+           whether a timeframe is missing a frame or has too many frames.
+        """
         frames = len(self.timestamp_lines)-1
         list_of_frames = [[]*frames]
         INVERSE_FPS = 1.0/self.framerate
@@ -275,9 +256,6 @@ class fileAnalysis:
         return p
 
     def apply_tracking(self, write, display):
-        # try:
-        #     cap = cv2.VideoCapture(self.path_name)
-        # except:
         try:
             path = self.path_name.split('.')
             path[-1] = 'mp4'
@@ -298,7 +276,6 @@ class fileAnalysis:
         if write is not None:
             writer = cv2.VideoWriter(write, 0x00000021, 30, (640, 480), False)
         
-        #while(cap.isOpened()):
         for i, line in enumerate(self.tracking_lines[:-1]):
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
@@ -328,8 +305,8 @@ class fileAnalysis:
                         1, (255,255,255), 3, 8)
             try:
                 if buzz == 1:
-                    cv2.putText(gray, 'Buzz', (15, 600), cv2.FONT_HERSHEY_SIMPLEX, 
-                                1, (255, 255, 255), 3, 8)
+                    cv2.putText(gray, 'Buzz', (15,600), cv2.FONT_HERSHEY_SIMPLEX
+                                , 1, (255,255,255), 3, 8)
             except:
                 pass
             if display is True:
@@ -338,9 +315,6 @@ class fileAnalysis:
                     break
             if write is not None:
                 writer.write(gray)
-            #count += 1
-            #if count > 1000:
-            #    break
         
         if write is not None:
             writer.release()
@@ -443,6 +417,7 @@ class fileAnalysis:
     def plot_relative_deviation(self):
         return self.plot_deviation(self.framerate)
 
+    
     def plot_timestamps(self):
         list_of_times = []
         x_axis = []
@@ -461,6 +436,7 @@ class fileAnalysis:
 
         return p
 
+    
     def plot_dropped_frames(self):
         count = 0
         list_of_times = []
