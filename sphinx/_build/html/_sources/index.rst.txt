@@ -1,0 +1,25 @@
+.. picam documentation master file, created by
+   sphinx-quickstart on Thu Aug 16 10:37:51 2018.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to picam's documentation!
+=================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+#.. automodule:: file_analysis
+		
+.. autoclass:: Plot
+   :members:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

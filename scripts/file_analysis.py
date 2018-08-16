@@ -1,4 +1,4 @@
-"""Performs analysis on a .timestamp.log file giving graphical and 
+"""Performs analysis on a .timestamp.log file giving graphical and
    statistical information
 
    Author: Zachary Selk <zrselk@gmail.com>
@@ -19,45 +19,61 @@ except:
     print('Warning! Cannot import cv2')
 
 
-class plot:
+class Plot:
     """Plots data in a graph.
 
-        Args:
-            plot_data: An matplotlib object containing the data to be plotted.
+       Args:
+           plot_data: An matplotlib object containing the data to be plotted.
 
-        Attributes:
-            x_label: Label for the x-axis of the graph.
-            y_label: Label for the y-axis of the graph.
+       Attributes:
+           x_label: Label for the x-axis of the graph.
+           y_label: Label for the y-axis of the graph.
     """
-    
-    __slots__ = ('x_label', 'y_label')
-    
+    __slots__ = ('x_label', 'y_label', 'draw_lines', 'draw_bars')
+
     def __init__(self, x_axis, y_axis, color):
         self.draw_lines = [(x_axis, y_axis, color)]
         self.draw_bars = []
 
-        
+
     def add_line(self, x_axis, y_axis, color):
+        """Adds a line to be drawn."""
         self.draw_lines.append((x_axis, y_axis, color))
 
-        
+
     def get_draw_lines(self):
+        """Returns the lines to be drawn."""
         return self.draw_lines
 
-    
+
     def add_bar(self, value):
+        """Adds a bar to be drawn."""
         self.draw_bars.append(value)
 
-        
+
     def get_draw_bars(self):
+        """Returns the bars to be drawn."""
         return self.draw_bars
-        
-                               
-class fileAnalysis:
+
+
+class FileAnalysis:
     """Plots data in a graph.
 
         Args:
-            path_name: The path to the timestamp file.
+            path_name: The path to the video file.
+
+       Attributes:
+            path_name: The path to the video file.
+            timestamp_path: The path to the timestamp file.
+            tracking_path: The path to the tracking data file.
+            timestamp_lines: List of timestamps.
+            tracking_lines: List of tracking lines.
+            tracking: Whether or not tracking is to be applied.
+            framerate: Framerate of video.
+            total_time: The duration of video.
+            time_difference: List of time difference between 
+            subsequent timestamps
+            standard_deviation: The standard deviation of the framerate.
     """
     def __init__(self, path_name):
         self.path_name = path_name
@@ -71,14 +87,14 @@ class fileAnalysis:
         self.time_difference = []
         self.standard_deviation = u''
 
-        with open(self.timestamp_path, 'r') as f:
-            self.timestamp_lines = f.readlines()
-            
+        with open(self.timestamp_path, 'r') as timestamp_file:
+            self.timestamp_lines = timestamp_file.readlines()
+
         # Check to see if the file exists
         try:
-            with open(self.tracking_path, 'r') as f:
+            with open(self.tracking_path, 'r') as tracking_file:
                 # Ignoring the first line to match up the timestamps
-                self.tracking_lines = f.readlines()[1:]
+                self.tracking_lines = tracking_file.readlines()[1:]
             self.tracking = True
         except:
             pass
@@ -100,40 +116,36 @@ class fileAnalysis:
             self.time_difference.append(difference)
             last_time = float(timestamp)
 
-            
+
     def find_framerate(self):
-        """Finds the framerate of the video using time differences.
-        """
+        """Finds the framerate of the video using time differences."""
         self.framerate = 1 / ((self.total_time/1000) /
                               len(self.time_difference))
 
-        
+
     def find_standard_deviation(self):
-        """Finds the standard deviation of the time differences
-        """
+        """Finds the standard deviation of the time differences"""
         mean = self.total_time / len(self.time_difference)
         deviation_sum = 0
         for difference in self.time_difference:
             deviation_sum += (difference - mean)**2
-            
+
         standard_deviation = deviation_sum/len(self.time_difference)
         (multiplier, units) = self.get_time_units(standard_deviation)
         standard_deviation = math.sqrt(standard_deviation)
         standard_deviation *= multiplier
         self.standard_deviation = (standard_deviation, units)
 
-        
+
     def find_info(self):
-        """Computes useful analysis data.
-        """
+        """Computes useful analysis data."""
         self.find_time_differences()
         self.find_framerate()
         self.find_standard_deviation()
 
-        
+
     def get_time_units(self, num):
-        """returns units of time measurement and its corrisponding multiplier.
-        """
+        """returns time measurement units and its corresponding multiplier."""
         if num >= 3600000:
             multiplier = 1/3600000
             units = 'hr'
@@ -149,42 +161,42 @@ class fileAnalysis:
         else:
             multiplier = 1000
             units = '\xB5s'
-        return (multiplier, units)            
-    
-        
+        return (multiplier, units)
+
+
     def get_mean_difference(self):
+        """Returns the mean difference"""
         return self.total_time / len(self.time_difference)
 
 
     def get_standard_deviation(self):
+        """Returns the standard deviation difference"""
         return self.standard_deviation[0]/1000
 
-    
-    
+
     def info(self):
-        """Displays simple information about the file.
-        """
+        """Displays simple information about the file."""
         print('  Sec: %s' % str(self.total_time/1000))
         print('  Frames: %s' % str(len(self.timestamp_lines)-1))
         print('  Framerate: %s' % str(self.framerate))
         print('  Standard Deviation: %f %s' % self.standard_deviation)
 
-        
+
     def dropped_frames(self):
         """Finds frames if a frame has deviated more than half the
-           inverse of the framerate from the standard then determins
+           inverse of the framerate from the standard then determines
            whether a timeframe is missing a frame or has too many frames.
         """
         frames = len(self.timestamp_lines)-1
         list_of_frames = [[]*frames]
-        INVERSE_FPS = 1.0/self.framerate
-        
+        inverse_fps = 1.0/self.framerate
+
         for line in self.timestamp_lines:
             time = float(line) / 1000.0
-            index = int(time/INVERSE_FPS + 0.5)
+            index = int(time/inverse_fps + 0.5)
             while index >= len(list_of_frames):
                 list_of_frames.append([])
-            list_of_frames[index].append(time/INVERSE_FPS - index*INVERSE_FPS)
+            list_of_frames[index].append(time/inverse_fps - index*inverse_fps)
 
             dropped = 0
             extra = 0
@@ -201,7 +213,7 @@ class fileAnalysis:
 
         # If it is balanced then no frames where dropped, they where just
         #     in a different timeframe
-        if(extra_count == 2*dropped):
+        if extra_count == 2*dropped:
             print('Balanced')
         else:
             print('Unbalanced')
@@ -209,24 +221,27 @@ class fileAnalysis:
 
     def get_point(self, box):
         """Retruns the center point of a box
-        
+
         Args:
             box: A tuple defined as (x0, y0, x1, y1) where (x0, y0) is the top
             left corner and (x1, y1) is the bottom right corner
         """
         box = box.split(',')
-        for i in range(len(box)):
+        for i in enumerate(box):
             box[i] = float(box[i])
 
         if box[0] is -1 and box[1] is -1 and box[2] is -1 and box[3] is -1:
             return 0
         return (box[0] + (box[2]-box[0])/2, box[1] + (box[3]-box[1])/2)
 
+
     def calc_dist(self, point0, point1):
-        """Returns the euclidean distance between point0 and point1"""
+        """Returns the euclidean distance between point0 and point1."""
         return math.sqrt((point0[0]-point1[0])**2 + (point0[1]-point1[1])**2)
 
+
     def plot_tracking(self):
+        """Plots the tracking info from the tracking file"""
         if self.tracking is False:
             print('Sorry, there was no tracking file found')
             return
@@ -248,14 +263,21 @@ class fileAnalysis:
             y.append(self.calc_dist(point, last_point))
             x.append(float(self.timestamp_lines[i+1])/1000)  # Convert to sec
             last_point = point
-        
+
         p = plot(x, y, 'g')
         p.y_label = 'Distance (px)'
         p.x_label = 'Sec'
-        
+
         return p
 
+
     def apply_tracking(self, write, display):
+        """Displays the video feed with the tracking and sleep data overlayed.
+
+           Args:
+              write: The video to be written.
+              display: Whether or not to display the video.
+        """
         try:
             path = self.path_name.split('.')
             path[-1] = 'mp4'
@@ -265,7 +287,7 @@ class fileAnalysis:
             print('Error: %s' % e)
             print(self.path_name)
             return
-        
+
         path = '/'.join(self.path_name.split('/')[:-1]) + '/'
         sleep_writer = io.open(path + '__TMP__.sleeping.log', 'w')
         sleeping = False
@@ -275,7 +297,7 @@ class fileAnalysis:
         writer = None
         if write is not None:
             writer = cv2.VideoWriter(write, 0x00000021, 30, (640, 480), False)
-        
+
         for i, line in enumerate(self.tracking_lines[:-1]):
             line = line.split(',')
             box = (int(line[0]), int(line[1]), int(line[2]), int(line[3]))
@@ -293,20 +315,22 @@ class fileAnalysis:
                 seconds_waited = 0
 
             prev_box = box
-                
+
             msg = 'Awake'
             if seconds_waited >= 20:
                 msg = 'Sleeping'
                 sleep_writer.write(u'1\n')
             else:
                 sleep_writer.write(u'0\n')
-                    
-            cv2.putText(gray, msg, (15,30), cv2.FONT_HERSHEY_SIMPLEX,
-                        1, (255,255,255), 3, 8)
+
+            cv2.putText(gray, msg, (15, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1, (255, 255, 255), 3, 8)
             try:
                 if buzz == 1:
-                    cv2.putText(gray, 'Buzz', (15,600), cv2.FONT_HERSHEY_SIMPLEX
-                                , 1, (255,255,255), 3, 8)
+                    cv2.putText(gray, 'Buzz', (15, 600),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                1, (255, 255, 255), 3, 8)
             except:
                 pass
             if display is True:
@@ -315,16 +339,16 @@ class fileAnalysis:
                     break
             if write is not None:
                 writer.write(gray)
-        
+
         if write is not None:
             writer.release()
         sleep_writer.close()
         cap.release()
         cv2.destroyAllWindows()
-                
-    
-    # Plots the framerate of each frame in relation to the last frame
+
+
     def plot_framerate(self):
+        """Plots the framerate of each frame in relation to the last frame."""
         x = []
         y = []
         last_time = float(self.timestamp_lines[0])
@@ -340,35 +364,41 @@ class fileAnalysis:
         p.x_label = 'Time [sec]'
 
         return p
-        
 
-    # Plots how much the closes frame deviates from being on the target_fps
+
     def plot_deviation(self, target_framerate):
+        """Plots how much the actual framerate deviates from being on
+           the target_fps.
+
+           Args:
+              target_framerate: The framerate we expect or wish to 
+              be capturing at.
+        """
         hits_x = []     # A list of x values for each frame
         hits_y = []     # A list of y values for each frame
         dropped_x = []  # A list of x values for each dropped frame
         dropped_y = []  # A list of y values for each dropped frame
         extra_x = []    # A list of x values for each additional frame
         extra_y = []    # A list of y values for each additional frame
-        
+
         # The inverse of the framerate, to give a timeframe for where a frame
         #     should be found
         time_gap = 1.0/float(target_framerate)
         correct_time = 0  # Where the frame should be found
         line_num = 0      # What line from the file is being used
         count = 0         # Counting the number of frames
-        
-        while(line_num < len(self.timestamp_lines)):
+
+        while line_num < len(self.timestamp_lines):
             time = float(self.timestamp_lines[line_num]) / 1000.0
-            
+
             # Frame was either dropped or very delayed
             if time >= correct_time + time_gap:
-                dropped_x.append(count)            
+                dropped_x.append(count)
                 # y value is set to time_gap so that extrenuous points
                 #     don't lower the resolution on the usefull information
-                #     when plotting            
+                #     when plotting
                 dropped_y.append(time_gap)
-                
+
                 # An extra frame was found in the previous period
                 #     (usually from delayed frames)
             elif time <= correct_time - time_gap:
@@ -384,16 +414,15 @@ class fileAnalysis:
                 line_num += 1
                 count += 1
                 continue
-        
+
             # The frame was found in the correct time period
             else:
                 hits_x.append(count)
                 hits_y.append(time - correct_time)
                 line_num += 1
-            
+
             count += 1               # Another frame is found
             correct_time += time_gap # Advance the timeframe
-
 
         multiplier = 1000000
         units = '\xB5s'
@@ -415,17 +444,22 @@ class fileAnalysis:
 
 
     def plot_relative_deviation(self):
+        """Plots the relative deviation in a graph."""
         return self.plot_deviation(self.framerate)
 
-    
+
     def plot_timestamps(self):
+        """Plots the timestamps in a graph."""
         list_of_times = []
         x_axis = []
-        (multiplier, units) = self.get_time_units(float(self.timestamp_lines[1]) - float(self.timestamp_lines[0]))
-        last_time = float(self.timestamp_lines[0])*multiplier
+        (multiplier, units) = \
+        self.get_time_units(float(self.timestamp_lines[1]) - \
+                            float(self.timestamp_lines[0]))
+
+        last_time = float(self.timestamp_lines[0]) * multiplier
 
         for i, timestamp in enumerate(self.timestamp_lines[1:]):
-            list_of_times.append(float(timestamp)*multiplier - last_time)
+            list_of_times.append(float(timestamp) * multiplier - last_time)
 
             last_time = float(timestamp) * multiplier
             x_axis.append(i)
@@ -436,8 +470,9 @@ class fileAnalysis:
 
         return p
 
-    
+
     def plot_dropped_frames(self):
+        """Plots the ammount of dropped frames in a graph."""
         count = 0
         list_of_times = []
         last_time = float(self.timestamp_lines[0])
@@ -447,7 +482,7 @@ class fileAnalysis:
             frames = int((float(timestamp)-last_time) / inverted_framerate)
             if frames > 1:
                 count += frames-1
-        
+
             last_time = float(timestamp)
 
         return count

@@ -1,0 +1,393 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to picam’s documentation! &#8212; picam 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-picam-s-documentation">
+<h1>Welcome to picam’s documentation!<a class="headerlink" href="#welcome-to-picam-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-file_analysis"></span><dl class="docutils">
+<dt>Performs analysis on a .timestamp.log file giving graphical and</dt>
+<dd><p class="first">statistical information</p>
+<p class="last">Author: Zachary Selk &lt;<a class="reference external" href="mailto:zrselk&#37;&#52;&#48;gmail&#46;com">zrselk<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;
+Github: www.github.com/zacharyselk
+Date  : June 2018</p>
+</dd>
+</dl>
+<p>Style-Guide: <a class="reference external" href="https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md">https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md</a></p>
+<dl class="class">
+<dt id="file_analysis.FileAnalysis">
+<em class="property">class </em><code class="descclassname">file_analysis.</code><code class="descname">FileAnalysis</code><span class="sig-paren">(</span><em>path_name</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots data in a graph.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>path_name: The path to the video file.</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>path_name: The path to the video file.
+timestamp_path: The path to the timestamp file.
+tracking_path: The path to the tracking data file.
+timestamp_lines: List of timestamps.
+tracking_lines: List of tracking lines.
+tracking: Whether or not tracking is to be applied.
+framerate: Framerate of video.
+total_time: The duration of video.
+time_difference: List of time difference between 
+subsequent timestamps
+standard_deviation: The standard deviation of the framerate.</dd>
+</dl>
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.apply_tracking">
+<code class="descname">apply_tracking</code><span class="sig-paren">(</span><em>write</em>, <em>display</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.apply_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the video feed with the tracking and sleep data overlayed.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>write: The video to be written.
+display: Whether or not to display the video.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.calc_dist">
+<code class="descname">calc_dist</code><span class="sig-paren">(</span><em>point0</em>, <em>point1</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.calc_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the euclidean distance between point0 and point1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.dropped_frames">
+<code class="descname">dropped_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.dropped_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds frames if a frame has deviated more than half the
+inverse of the framerate from the standard then determines
+whether a timeframe is missing a frame or has too many frames.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.find_framerate">
+<code class="descname">find_framerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.find_framerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the framerate of the video using time differences.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.find_info">
+<code class="descname">find_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.find_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes useful analysis data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.find_standard_deviation">
+<code class="descname">find_standard_deviation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.find_standard_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the standard deviation of the time differences</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.find_time_differences">
+<code class="descname">find_time_differences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.find_time_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the time differences between 2 subsequent timestamps in order
+to find framerate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.get_mean_difference">
+<code class="descname">get_mean_difference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.get_mean_difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean difference</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.get_point">
+<code class="descname">get_point</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.get_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retruns the center point of a box</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>box: A tuple defined as (x0, y0, x1, y1) where (x0, y0) is the top
+left corner and (x1, y1) is the bottom right corner</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.get_standard_deviation">
+<code class="descname">get_standard_deviation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.get_standard_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the standard deviation difference</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.get_time_units">
+<code class="descname">get_time_units</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.get_time_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns time measurement units and its corresponding multiplier.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.info">
+<code class="descname">info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays simple information about the file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_deviation">
+<code class="descname">plot_deviation</code><span class="sig-paren">(</span><em>target_framerate</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots how much the actual framerate deviates from being on
+the target_fps.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>target_framerate: The framerate we expect or wish to 
+be capturing at.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_dropped_frames">
+<code class="descname">plot_dropped_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_dropped_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the ammount of dropped frames in a graph.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_framerate">
+<code class="descname">plot_framerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_framerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the framerate of each frame in relation to the last frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_relative_deviation">
+<code class="descname">plot_relative_deviation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_relative_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the relative deviation in a graph.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_timestamps">
+<code class="descname">plot_timestamps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_timestamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the timestamps in a graph.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.FileAnalysis.plot_tracking">
+<code class="descname">plot_tracking</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.FileAnalysis.plot_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the tracking info from the tracking file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="file_analysis.Plot">
+<em class="property">class </em><code class="descclassname">file_analysis.</code><code class="descname">Plot</code><span class="sig-paren">(</span><em>x_axis</em>, <em>y_axis</em>, <em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots data in a graph.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>plot_data: An matplotlib object containing the data to be plotted.</dd>
+<dt>Attributes:</dt>
+<dd>x_label: Label for the x-axis of the graph.
+y_label: Label for the y-axis of the graph.</dd>
+</dl>
+<dl class="method">
+<dt id="file_analysis.Plot.add_bar">
+<code class="descname">add_bar</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.Plot.add_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a bar to be drawn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.Plot.add_line">
+<code class="descname">add_line</code><span class="sig-paren">(</span><em>x_axis</em>, <em>y_axis</em>, <em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.Plot.add_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a line to be drawn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.Plot.get_draw_bars">
+<code class="descname">get_draw_bars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.Plot.get_draw_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bars to be drawn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="file_analysis.Plot.get_draw_lines">
+<code class="descname">get_draw_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#file_analysis.Plot.get_draw_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the lines to be drawn.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-analysis_tools"></span><p>Defines the class used to analyze and visualize data about captured videos.</p>
+<blockquote>
+<div>Author: Zachary Selk &lt;<a class="reference external" href="mailto:zrselk&#37;&#52;&#48;gmail&#46;com">zrselk<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;
+Github: www.github.com/zacharyselk
+Date  : June 2018</div></blockquote>
+<p>Style-Guide: <a class="reference external" href="https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md">https://www.github.com/google/styleguide/blob/gh-pages/pyguide.md</a></p>
+<dl class="class">
+<dt id="analysis_tools.Evaluate">
+<em class="property">class </em><code class="descclassname">analysis_tools.</code><code class="descname">Evaluate</code><span class="sig-paren">(</span><em>ts_path_name</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that plots frame and tracking data graphs using matplotlib.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>ts_path_name: The path name to the video timestamp file.</dd>
+<dt>Attributes:</dt>
+<dd>x_size: Width of the graph to be drawn.
+y_size: Height of the graph to be drawn.
+plot_style: Style of the graph to be drawn.
+file_path: Path to the timestamp files.
+files: List of the timestamp files to be plotted.</dd>
+</dl>
+<dl class="method">
+<dt id="analysis_tools.Evaluate.apply_tracking">
+<code class="descname">apply_tracking</code><span class="sig-paren">(</span><em>write=None</em>, <em>display=True</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.apply_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applys tracking to multiple files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.dropped_frames">
+<code class="descname">dropped_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.dropped_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints number of frames dropped in video files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.info">
+<code class="descname">info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints general information about files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>plot_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots data in a graph.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>plot_data: An matplotlib object containing the data to be plotted.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_deviation">
+<code class="descname">plot_deviation</code><span class="sig-paren">(</span><em>target_framerate</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots how much the actual framerate deviates from being on
+the target_fps.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>target_framerate: The framerate we expect or wish to 
+be capturing at.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_dropped_frames">
+<code class="descname">plot_dropped_frames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_dropped_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots dropped frames from multiple files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_framerate">
+<code class="descname">plot_framerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_framerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots framerate of video files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_relative_deviation">
+<code class="descname">plot_relative_deviation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_relative_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots relative deviation from target framerate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_standards">
+<code class="descname">plot_standards</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_standards" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots standard deviation of video framerate drops.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_timestamps">
+<code class="descname">plot_timestamps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_timestamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots timestamps from multiple files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis_tools.Evaluate.plot_tracking">
+<code class="descname">plot_tracking</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#analysis_tools.Evaluate.plot_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots relative deviation from target framerate.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Zach Selk, Edgar Bermudez, Ethan Toly.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
